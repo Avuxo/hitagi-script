@@ -15,7 +15,7 @@ echo     ;;;;;;;             ;;    ;;;;;,,      \`;;;;;,,
 
 echo "~~Hitagi-Script Windows Edition~~"
 echo "Please ensure that you have installed NodeJS 7.x"
-echo "https://nodejs.org/dist/v7.10.0/node-v7.10.0-x64.msi"
+echo "https://nodejs.org/en/download/current/"
 
 echo "STEP ONE: configure config.json  (as is seen on the github page)"
 set /p name="Name of target art? "
