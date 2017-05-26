@@ -28,7 +28,7 @@ co(function * (){
 /*download function*/
 function* dl(json){
     for(var i of json.illusts){
-        var url = i.imageUrls.large; //get original image url
+        var url = i.metaSinglePage.originalImageUrl || i.imageUrls.large;  //get original image url (shoutout to ZK for the fix)
         if(url){
             yield pixivImg(url); //download image
             yield wait();
