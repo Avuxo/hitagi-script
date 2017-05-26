@@ -16,6 +16,7 @@ echo     ;;;;;;;             ;;    ;;;;;,,      \`;;;;;,,
 echo ~~Hitagi-Script Windows Edition~~
 echo Please ensure that you have installed NodeJS 7.x
 echo https://nodejs.org/en/download/current/
+call npm install
 
 echo "STEP ONE: configure config.json  (as is seen on the github page)"
 set /p name="Name of target art? "
