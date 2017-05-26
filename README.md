@@ -9,12 +9,12 @@ This script searches Pixiv and Danbooru, downloads it to a temporary directory, 
 Example `config.json` file
 ```
 {
-    "username":"user@email.com",
-    "password":"super_secure_password",
-    "imgur_key":"FEIJvi3lijA36",
-    "album_id":"FFert",
-    "danbooru_token":"FFIJEijli39p/ijllij1lij2",
-    "danbooru_login":"username",
+	"username":"user@email.com",
+	"password":"super_secure_password",
+	"imgur_key":"FEIJvi3lijA36",
+	"album_id":"FFert",
+	"danbooru_token":"FFIJEijli39p/ijllij1lij2",
+	"danbooru_login":"username",
 	"name":"hitagi",
 	"pixiv_name":"ひたぎ",
 	"danbooru_name":"senjougahara_hitagi"
