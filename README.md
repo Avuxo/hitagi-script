@@ -3,7 +3,7 @@ A script originally designed to download art of the Bakemonogatari character Hit
 
 With that being said, I have since designed it so that it can be used on virtually any character, assuming they have art.
 
-This script searches Danbooru and Pixiv and downloads all art it finds.
+This script searches Safebooru and Pixiv and downloads all art it finds.
 
 ## GENERAL CONFIG (both windows and linux)
 Example `config.json` file
