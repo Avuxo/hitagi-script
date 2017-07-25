@@ -4,15 +4,15 @@ const fs = require('fs');
 
 var booru = new Danbooru.Safebooru();
 
-var name = process.argv[2];
+var name = process.argv[2]; // get the name as the third argument
 
 
 var dirName = sanitize(name);
 if(!fs.existsSync(dirName)){ // make sure directory exists
-	fs.mkdirSync(dirName);
+	fs.mkdirSync(dirName); // create directory if it doesnt exist
 }
 
-const wait = () => new Promise(resolve => setTimeout(() => resolve(), 100));
+const wait = () => new Promise(resolve => setTimeout(() => resolve(), 100)); // promise to slow stuff down
 
 function *getNextPage(index){
 	var query = { // the query for danbooru
@@ -25,17 +25,17 @@ function *getNextPage(index){
 	yield booru.posts(query).then(async posts => { // search posts and download them
 		var failed = 0; // if this exceeds 5, cancel
 		for(var i=0; i<(await posts.length); i++){
-			if(failed > 5){
+			if(failed > 5){ // 5 is an arbitrary number to find when you're at the end of the list
 				break;
 			}
 			let file = posts[i].file;
-			if(file.name == undefined){
+			if(file.name == undefined){ // make sure the file is valid
 				failed++;
 				continue;
 			}else{
 				failed = 0; // reset the counter
-				let data = await file.download();
-				fs.writeFile(dirName + "/"+ file.md5 + "." + file.ext, data, (err) => {
+				let data = await file.download(); // download file into memory
+				fs.writeFile(dirName + "/"+ file.md5 + "." + file.ext, data, (err) => { // write the file into storage
 					if(err) console.log(err);
 				});
 			}
@@ -45,14 +45,14 @@ function *getNextPage(index){
 	yield wait();
 }
 
-co(function *(){
-	var i = 0;
+co(function *(){ // entry point
+	var i = 0; // iterator for what page will be chosen
 	for(var i=0;i<200;i++){ // 200 is an arbitrary number for "download a bunch, yo -- if you have time concerns, lower it"
 		yield getNextPage(i);
 	}
 });
 
-function sanitize(name){ // sanitize name for directory
+function sanitize(name){ // sanitize name for directory use (remove / and () )
 	name = name.split('_')[0];
 	return name;
 }
