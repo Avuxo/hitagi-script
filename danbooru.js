@@ -35,7 +35,7 @@ function *getNextPage(index){
 			}else{
 				failed = 0; // reset the counter
 				let data = await file.download();
-				fs.writeFile(dirName + "/"+ file.name, data, (err) => {
+				fs.writeFile(dirName + "/"+ file.md5 + "." + file.ext, data, (err) => {
 					if(err) console.log(err);
 				});
 			}
