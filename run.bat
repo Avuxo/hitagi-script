@@ -1,4 +1,4 @@
-@echo off
+B@echo off
 cls
 @echo:
 echo     ,,,                 ;;                      ;, 
@@ -20,5 +20,5 @@ REM call npm install
 set /p name="Safebooru tags (name or additional queries)? "
 
 echo Downloading art...
-call node danbooru-win.js %name%
+call node danbooru.js %name%
 pause
