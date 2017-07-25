@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/benwhom/hitagi-script#readme",
   "dependencies": {
+    "co": "^4.6.0",
     "danbooru": "^2.0.3"
   }
 }

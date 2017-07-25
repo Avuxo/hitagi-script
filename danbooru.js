@@ -6,6 +6,7 @@ var booru = new Danbooru.Safebooru();
 
 var name = process.argv[2];
 
+
 var dirName = sanitize(name);
 if(!fs.existsSync(dirName)){ // make sure directory exists
 	fs.mkdirSync(dirName);
@@ -29,7 +30,6 @@ function *getNextPage(index){
 			}
 			let file = posts[i].file;
 			if(file.name == undefined){
-				console.log("Skipping file.");
 				failed++;
 				continue;
 			}else{
