@@ -1,4 +1,4 @@
-BB# Hitag-script
+# Hitagi-script
 A script originally designed to download art of the Bakemonogatari character Hitagi Senjougahara.
 
 With that being said, I have since designed it so that it can be used on virtually any character, assuming they have art.
