@@ -1,4 +1,4 @@
-B@echo off
+@echo off
 cls
 @echo:
 echo     ,,,                 ;;                      ;, 
@@ -23,8 +23,6 @@ echo Where would you like to download art from?
 echo [D]anbooru
 echo [S]afebooru
 set /p booru="? "
-
-echo %booru%
 
 echo Downloading art...
 call node danbooru.js %name% %booru%
