@@ -2,15 +2,20 @@ const Danbooru = require('danbooru');
 const co = require('co');
 const fs = require('fs');
 
-var name = process.argv[2]; // get the name as the third argument
-var booruType = process.argv[3]; // get safe vs danbooru
+var name = process.argv.slice(3).join(' '); // get the name as the third argument
+var booruType = process.argv[2]; // get safe vs danbooru
 
-if(booruType == "S" || booruType == "s")
+if(booruType == "S" || booruType == "s") {
     var booru = new Danbooru.Safebooru();
-else if(booruType == "D" || booruType == "d")
+} else if(booruType == "D" || booruType == "d") {
     var booru = new Danbooru();
-else
+    if(name.split(" ").length > 2){
+        console.log("ERROR: Danbooru only allows for a maximum of 2 tags at a time");
+        process.exit(1);
+    }
+} else {
     process.exit(1);
+}
 
 var dirName = sanitize(name);
 if(!fs.existsSync(dirName)){ // make sure directory exists

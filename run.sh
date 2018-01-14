@@ -30,8 +30,8 @@ npm install
 echo "Downloading art"
 
 if hash nodejs 2>/dev/null; then
-    nodejs danbooru.js $tags $booru
+    nodejs danbooru.js $booru $tags
 else
-    node danbooru.js $tags $booru
+    node danbooru.js $booru $tags
 fi
 
