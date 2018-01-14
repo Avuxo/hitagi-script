@@ -11,7 +11,7 @@ For multiple queries, ensure that the tags are separated via spaces (ex: for art
 
 Danbooru's API allows for a maximum of 2 tags in one query, Safebooru doesn't have this restriction.
 
-## Running the script (Linux)
+## Running the script (Linux / MacOS)
 Install Node.js 7.x through your package manager via https://nodejs.org/en/download/package-manager/
 
 `$ ./run.sh` in the project directory and provide the safebooru tag(s) when prompted
