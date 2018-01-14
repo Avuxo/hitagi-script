@@ -25,5 +25,5 @@ echo [S]afebooru
 set /p booru="? "
 
 echo Downloading art...
-call node danbooru.js %name% %booru%
+call node danbooru.js %booru% %name%
 pause
