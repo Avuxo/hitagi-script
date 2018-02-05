@@ -5,6 +5,8 @@ Hitagi-Script is a parallelized *booru scraper written in Python.
 ## Setup
 There is only one external dependency in the script (that is not included in the standard Python 3 library): Beautiful Soup 4 (used for parsing HTML easily). In the future I plan to replace this dependency with the html.HTMLParser built in module.
 
+`$ pip3 install bs4`
+
 **make sure you have python 3 and not python 2**
 
 
