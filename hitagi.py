@@ -20,7 +20,7 @@ Avuxo 2018
 
 """
 
-
+totalArtDownloaded = 0
 
 """
 Worker class
@@ -117,7 +117,7 @@ class DownloadWorker(Thread):
 
             
             
-            self.parent.artDownloaded += 1
+            totalArtDownloaded += 1
         self.die()
         
     def run(self):
@@ -164,9 +164,6 @@ class Scraper:
 
         # current *booru page
         self.page = startPage
-        
-        # amount of art done downloading
-        self.artDownloaded = 0
 
         # TODO: implement as cmdline argument; limit art downloaded
         self.artLimit = maxArt
@@ -278,6 +275,8 @@ def main():
                       , args.startPage, args.maxArt)
 
     scraper.crawl()
-
+    
+    print("Total art downloaded: " + totalArtDownloaded)
+    
 if __name__ == "__main__":
     main()
