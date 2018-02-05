@@ -102,12 +102,10 @@ class DownloadWorker(Thread):
         self.die()
         
     def run(self):
-        print("s")
         self.download()
 
     # open spot in the thread pool
     def die(self):
-        print("d")
         self.parent.killDownloadWorker()
         
 
