@@ -1,5 +1,5 @@
 from threading import Thread
-import queue, time, random, urllib.parse, sys, hashlib
+import queue, time, random, urllib.parse, sys, hashlib, argparse
 import bs4, urllib3 # beautiful soup is the only external dependency
 
 
@@ -123,7 +123,7 @@ The scraper operates in three stages:
 - pre-allocated threads download the images found by phase 2 from the queue
 """
 class Scraper:
-    def __init__(self, baseurl, maxWorkers):
+    def __init__(self, baseurl, numWorkers, numDl, startPage, maxArt):
         # setup the http library
         self.http = urllib3.PoolManager()
 
@@ -136,20 +136,21 @@ class Scraper:
         self.baseurl = baseurl
 
         # number of thread workers 
-        self.maxNumScrapeWorkers   = self.maxWorkers // 2
-        self.maxNumDownloadWorkers = self.maxWorkers // 2
+        self.maxNumScrapeWorkers = numWorkers
+        self.maxNumDownloadWorkers = numDl
 
+        # current # of thread workers
         self.numScrapeWorkers   = 0
         self.numDownloadWorkers = 0
 
         # current *booru page
-        self.page = 1
+        self.page = startPage
         
         # amount of art done downloading
         self.artDownloaded = 0
 
         # TODO: implement as cmdline argument; limit art downloaded
-        self.artLimit = 0
+        self.artLimit = maxArt
 
 
     # is there a page after the current one?
@@ -214,29 +215,48 @@ class Scraper:
     def killDownloadWorker(self):
         self.numDownloadWorkers -= 1
 
+# take arguments and convert them to a query
+def parseUrl(booruBase, tags):
+    url = booruBase + "/posts?"
+    tagList = tags.split()
+    for tag in tagList:
+        url += tag + "+"
 
+    return url[:-1]
+        
 """
 TODO
 - advanced command line parsing
-  - -w : # of WORKER threads (default: 3)
-  - -d : # of DOWNLOAD threads (default: 3)
-  - -t : # of TOTAL threads (default: 6); download = worker = (TOTAL / 2)
-  - -t : tags
-  - -o : specify output directory (default: .)
-  - -s : start at page n (default: 0)
   - -v : verbose output (default: false)
-  - -m : maximum amount of art (default: unlimited)
-  - -b : specify specific *booru base URL
   - -g : read from stdin
 """
 
 def main():
-    if len(sys.argv) < 3:
-        print("ERROR: Script requires 2 args: baseURL, maxNumWorkers")
-        exit(1)
-        
+    
+    # command line arguments
+    parser = argparse.ArgumentParser(description="A Parallelized *booru bulk-downloader")
+
+    parser.add_argument('-w', action="store", dest='numWorkers', default=3
+                        ,help="# of worker threads (default: 3)")
+    parser.add_argument('-d', action="store", dest='numDl', default=3
+                        ,help="# of download threads (default: 3)")
+    parser.add_argument('-t', action="store", dest="tags"
+                        ,help="booru Tag to search for"
+                        ,required=True)
+    parser.add_argument('-s', action="store", dest="startPage", default=1
+                        ,help="Page to start at (default: 1)")
+    parser.add_argument('-m', action="store", dest="maxArt", default=0
+                        ,help="Max # of art to download")
+    parser.add_argument('-b', action="store", dest="booru"
+                        ,default="https://danbooru.donmai.us"
+                        ,help="specific *booru base URL (default: danbooru)")
+    args = parser.parse_args()
+    
+    baseUrl = parseURl(args.booru, args.tags)
+    
     # create the main crawler
-    scraper = Scraper(sys.argv[1], sys.argv[2])
+    scraper = Scraper(baseUrl, args.numWorkers, args.numDl
+                      , args.startPage, args.maxArt)
 
     scraper.crawl()
 

@@ -3,7 +3,7 @@
 Hitagi-Script is a parallelized *booru scraper written in Python.
 
 ## Setup
-Because Hitagi-script is written in Python 3, Python 3 is a required tool. There is only one external dependency in the script (that is not included in the standard Python 3 library): Beautiful Soup 4 (used for parsing HTML easily). In the future I plan to replace this dependency with the html.HTMLParser built in module.
+There is only one external dependency in the script (that is not included in the standard Python 3 library): Beautiful Soup 4 (used for parsing HTML easily). In the future I plan to replace this dependency with the html.HTMLParser built in module.
 
 **make sure you have python 3 and not python 2**
 
@@ -18,21 +18,18 @@ arguments
  -h : Print the help screen
  -w : # of WORKER threads (default: 3)
  -d : # of DOWNLOAD threads (default: 3)
- -t : # of TOTAL threads (default: 6); download = worker = (TOTAL / 2)
  -t : tags
- -o : specify output directory (default: .)
  -s : start at page n (default: 0)
  -v : verbose output (default: false)
  -m : maximum amount of art (default: unlimited)
  -b : specify specific *booru base URL (default: danbooru.donmai.us)
- -g : read tag from stdin
 ```
 
 Ex:
 
 To download 300 pictures of Hitagi Senjougahara (using the default 6 threads), you'd run:
 
-`$ python3 hitagi.py -t senjougahara_hitagi -m 300 -b safebooru.org`
+`$ python3 hitagi.py -t "senjougahara_hitagi" -m 300 -b "https://safebooru.org"`
 
 ## About
 Hitagi-script was originally a node.js script that I created because I wanted to download all of the Hitagi Senjougahara (a character from Bakemonogatari that I'm rather fond of) art on Pixiv and a *booru site (specifically safebooru - I'm not much of a fan of lewd stuff).
