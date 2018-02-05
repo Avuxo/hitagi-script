@@ -4,6 +4,25 @@ import bs4, urllib3 # beautiful soup is the only external dependency
 
 
 """
+     ,,,                 ;;                      ;,   ; ;
+     ;,     ;;,          ;;                   ;;;;;;;;  ; ;
+   ,;       ;,  ;,    ;;;;;;;;;                  ;;    
+  ,;         ;,          ;;                 ;;;;;;;;;;;;;
+  ;;         ;;          ;;  .,,,,               ;; 
+  ;;         ;;          ;;  ,''''              ,;; 
+   ;,       ,;           ;;                 ,;''    
+    ;,     ,;            ;;  ;,             ;;       
+     ;;;;;;;             ;;    ;;;;;,,      \`;;;;;,, 
+
+Hitagi
+A parallelized *booru bulk-downloading tool.
+Avuxo 2018
+
+"""
+
+
+
+"""
 Worker class
 This class does all the parallelized crawling.
 Provided a link it will run until it finds an image URL.
