@@ -1,5 +1,5 @@
 from threading import Thread
-import queue, time, random, urllib.parse, sys
+import queue, time, random, urllib.parse, sys, hashlib
 import bs4, urllib3 # beautiful soup is the only external dependency
 
 
@@ -50,8 +50,12 @@ class Worker(Thread):
             postHTML = self.http.request('GET', postURL)
             soup = bs4.BeautifulSoup(postHTML.data, "html5lib")
             # get the url of the first image
-            self.queue.put(soup.find('img')['src'])
-            
+            try:
+                imgUrl = soup.find('img')['src']
+                self.queue.put(soup.find('img')['src'])
+            except:
+                print("unable to download image.")
+                
         self.die() # kill the thread
         
     def die(self):
@@ -68,25 +72,42 @@ the scraping threads put URLs in a queue and these threads download the files.
 """
 class DownloadWorker(Thread):
     def __init__(self, queue, http, parent):
-        Thread.__init__(self)
+        Thread.__init__(self) # super thread
+        
         self.queue = queue
-
+        self.http = http
+        self.parent = parent
+        
     def download(self):
         # loop through and download until the queue is empty
-        while !self.queue.empty or self.parent.artDownloaded < self.parent.artLimit:
+        while not self.queue.empty():
             curUrl = self.queue.get()
-            print(curUrl)
+
+            downloadUrl = "https://danbooru.donmai.us" + curUrl
+
+            data = self.http.request('GET', downloadUrl).data
+
+            # filename is the md5 sum of the sub url
+            m = hashlib.md5()
+            m.update(curUrl.encode('utf-8'))
+            filename = m.hexdigest()
+
+            # open a write stream
+            f = open("./" + filename + "." + curUrl[-3:], 'wb')
+            f.write(data)
+
             
-            # TODO download the url to a file.
             
             self.parent.artDownloaded += 1
         self.die()
         
     def run(self):
+        print("s")
         self.download()
 
     # open spot in the thread pool
     def die(self):
+        print("d")
         self.parent.killDownloadWorker()
         
 
@@ -113,11 +134,15 @@ class Scraper:
 
         # add CLI arguments to class
         self.maxWorkers = int(maxWorkers)
+        self.numWorkers = 0
         self.baseurl = baseurl
 
         # number of thread workers 
-        self.numScrapeWorkers   = maxWorkers // 2
-        self.numDownloadWorkers = maxWorkers // 2
+        self.maxNumScrapeWorkers   = self.maxWorkers // 2
+        self.maxNumDownloadWorkers = self.maxWorkers // 2
+
+        self.numScrapeWorkers   = 0
+        self.numDownloadWorkers = 0
 
         # current *booru page
         self.page = 1
@@ -150,22 +175,23 @@ class Scraper:
         
     # create a new scrape worker
     def spawnWorker(self, url):
-        if self.numScrapeWorkers < self.maxWorkers:
+        if self.numScrapeWorkers < self.maxNumScrapeWorkers:
             # create a worker thread and initialize it
             work = Worker(url, self.downloadQueue, self.http, self, self.page)
             work.start()
             # maintain list of workers
-            self.numWorkers += 1
+            self.numScrapeWorkers += 1
             return True
         else:
             return False
 
     # create a new worker for the download queue
     def spawnDownloadWorker(self):
-        if self.numDownloadWorkers < self.maxWorkers:
+        if self.numDownloadWorkers < self.maxNumDownloadWorkers:
             # create a new download worker
-            work = DownloadWorker(self.queue, self.http)
-            self.numWorkers += 1
+            work = DownloadWorker(self.downloadQueue, self.http, self)
+            work.start()
+            self.numDownloadWorkers += 1
             return True
         else:
             return False
@@ -178,7 +204,7 @@ class Scraper:
             while self.spawnWorker(curPage) == False: # can we spawn a worker?
                 time.sleep(1) # sleep for 1 second and check again
             # attempt to spawn a download worker on every page
-            spawnDownloadWorker()
+            self.spawnDownloadWorker()
             self.page += 1
             curPage = self.baseurl + "&page=" + str(self.page)
 
