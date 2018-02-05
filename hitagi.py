@@ -20,8 +20,6 @@ Avuxo 2018
 
 """
 
-totalArtDownloaded = 0
-
 """
 Worker class
 This class does all the parallelized crawling.
@@ -117,7 +115,6 @@ class DownloadWorker(Thread):
 
             
             
-            totalArtDownloaded += 1
         self.die()
         
     def run(self):
@@ -150,7 +147,6 @@ class Scraper:
         self.downloadQueue = queue.Queue()
 
         # add CLI arguments to class
-        self.maxWorkers = int(maxWorkers)
         self.numWorkers = 0
         self.baseurl = baseurl
 
@@ -233,7 +229,7 @@ class Scraper:
 
 # take arguments and convert them to a query
 def parseUrl(booruBase, tags):
-    url = booruBase + "/posts?"
+    url = booruBase + "posts?tags="
     tagList = tags.split()
     for tag in tagList:
         url += tag + "+"
@@ -252,9 +248,9 @@ def main():
     # command line arguments
     parser = argparse.ArgumentParser(description="A Parallelized *booru bulk-downloader")
 
-    parser.add_argument('-w', action="store", dest='numWorkers', default=3
+    parser.add_argument('-w', action="store", dest='numWorkers', default=3, type=int
                         ,help="# of worker threads (default: 3)")
-    parser.add_argument('-d', action="store", dest='numDl', default=3
+    parser.add_argument('-d', action="store", dest='numDl', default=3, type=int
                         ,help="# of download threads (default: 3)")
     parser.add_argument('-t', action="store", dest="tags"
                         ,help="booru Tag to search for"
@@ -264,19 +260,18 @@ def main():
     parser.add_argument('-m', action="store", dest="maxArt", default=0
                         ,help="Max # of art to download")
     parser.add_argument('-b', action="store", dest="booru"
-                        ,default="https://danbooru.donmai.us"
+                        ,default="https://danbooru.donmai.us/"
                         ,help="specific *booru base URL (default: danbooru)")
     args = parser.parse_args()
     
-    baseUrl = parseURl(args.booru, args.tags)
+    baseUrl = parseUrl(args.booru, args.tags)
+    print(baseUrl + "\n\n")
     
     # create the main crawler
     scraper = Scraper(baseUrl, args.numWorkers, args.numDl
                       , args.startPage, args.maxArt)
 
     scraper.crawl()
-    
-    print("Total art downloaded: " + totalArtDownloaded)
     
 if __name__ == "__main__":
     main()
