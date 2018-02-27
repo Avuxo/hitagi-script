@@ -161,6 +161,9 @@ class Scraper:
         # current *booru page
         self.page = startPage
 
+        # number of pages for given tag
+        self.numPages = self.getNumPages()
+
         # TODO: implement as cmdline argument; limit art downloaded
         self.artLimit = maxArt
 
@@ -181,8 +184,6 @@ class Scraper:
                 return True # there is a next page
 
         return False # there is not a next page
-
-        
         
     # create a new scrape worker
     def spawnWorker(self, url):
@@ -206,6 +207,16 @@ class Scraper:
             return True
         else:
             return False
+
+    # get the number of pages for this tag
+    def getNumPages(self):
+        curPage = self.baseurl
+        page = 0
+        while self.getNextPage(curPage):
+            page += 1
+            curPage = self.baseurl + "&page=" + str(page)
+
+        return page
         
     # crawl through pages and spawn a worker on every page
     def crawl(self): # crawl pages
