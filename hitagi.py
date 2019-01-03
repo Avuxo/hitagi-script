@@ -99,8 +99,7 @@ class DownloadWorker(Thread):
         # loop through and download until the queue is empty
         while not self.queue.empty():
             curUrl = self.queue.get()
-
-            downloadUrl = "https://danbooru.donmai.us" + curUrl
+            downloadUrl = curUrl
 
             data = self.http.request('GET', downloadUrl).data
 
@@ -255,7 +254,7 @@ TODO
 """
 
 def main():
-    
+    urllib3.disable_warnings()
     # command line arguments
     parser = argparse.ArgumentParser(description="A Parallelized *booru bulk-downloader")
 
