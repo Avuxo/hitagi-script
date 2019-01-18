@@ -1,9 +1,14 @@
 extern crate reqwest;
 extern crate clap;
+extern crate select;
+extern crate regex;
 
 use std::io::copy;
 use std::fs::File;
 use clap::{Arg, App};
+use select::document::Document;
+use select::predicate::Name;
+use regex::Regex;
 
 fn main() {
     // setup argv
@@ -31,9 +36,10 @@ fn main() {
         .value_of("tags")
         .unwrap();
 
+    // TODO: handle custom base urls (specifically for safebooru)
     let base_url: &str = args
         .value_of("base url")
-        .unwrap_or("https://danbooru.donmai.us/posts?tags=");
+        .unwrap_or("https://danbooru.donmai.us");
 
     scrape(base_url, tags);
 }
@@ -42,21 +48,36 @@ fn scrape(base_url: &str, tags: &str) {
     let page_count: i32 = count_pages(base_url, tags);
 
     for i in 1..(page_count+1) {
-        let url = format!("{}{}&page={}", base_url, tags, i);
-        parse_page(url);
+        let url = format!("{}/posts?tags={}&page={}", base_url, tags, i);
+        parse_page(base_url, url);
     }
 }
 
 fn count_pages(base_url: &str, tags: &str) -> i32 {
+    // TODO
     return 3;
 }
 
-fn parse_page(url: String) {
-    // let page1 = reqwest::get(url)
-    //     .unwrap()
-    //     .text()
-    //     .unwrap();
-   
+fn parse_page(base_url: &str, url: String) {
+    let post_regex = Regex::new(r"/posts/\d+").unwrap();
+    println!("Parsing {}", url);
+    let page = reqwest::get(&url[..]).unwrap();
+    assert!(page.status().is_success());
+
+    Document::from_read(page)
+        .unwrap()
+        .find(Name("a"))
+        .filter_map(|n| n.attr("href"))
+        .for_each(|x| {
+            if post_regex.is_match(x) {
+                let img_url = find_image(&format!("{}{}", base_url, x)[..]);
+                download_img(img_url);
+            }
+        });
+}
+
+fn find_image(url: String) {
+    
 }
 
 fn download_img(name: &str) {

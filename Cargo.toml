@@ -5,6 +5,7 @@ authors = ["Ben <ben@july7.pw>"]
 edition = "2018"
 
 [dependencies]
-html5ever = "*"
+select = "*"
 reqwest = "*"
 clap = "*"
+regex = "1.0"
