@@ -1,0 +1,10 @@
+[package]
+name = "hitagi-script"
+version = "0.1.0"
+authors = ["Ben <ben@july7.pw>"]
+edition = "2018"
+
+[dependencies]
+html5ever = "*"
+reqwest = "*"
+clap = "*"
