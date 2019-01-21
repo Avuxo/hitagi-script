@@ -44,9 +44,9 @@ fn main() {
     scrape(base_url, tags);
 }
 
+// entry-point for general scraper
 fn scrape(base_url: &str, tags: &str) {
-    let page_count: i32 = count_pages(base_url, tags);
-
+    let page_count: i32 = 3; //count_pages(base_url, tags);
     for i in 1..(page_count+1) {
         let url = format!("{}/posts?tags={}&page={}", base_url, tags, i);
         parse_page(base_url, url);
@@ -54,14 +54,29 @@ fn scrape(base_url: &str, tags: &str) {
 }
 
 fn count_pages(base_url: &str, tags: &str) -> i32 {
-    // TODO
-    return 3;
+    let mut page_count: i32 = 0;
+    let mut url = format!("{}/posts?tags={}&page=", base_url, tags);
+    loop {
+        page_count += 1;
+        url = format!("{}{}", url, page_count);
+        if !page_count_valid(&url[..]) {
+            break;
+        }
+    }
+
+    page_count
+}
+
+// does current page contain art?
+fn page_count_valid(url: &str) -> bool{
+    false
 }
 
 fn parse_page(base_url: &str, url: String) {
     let post_regex = Regex::new(r"/posts/\d+").unwrap();
     println!("Parsing {}", url);
     let page = reqwest::get(&url[..]).unwrap();
+    // I'm skeptical if this does anything because danbooru isn't good about status codes.
     assert!(page.status().is_success());
 
     Document::from_read(page)
@@ -70,14 +85,19 @@ fn parse_page(base_url: &str, url: String) {
         .filter_map(|n| n.attr("href"))
         .for_each(|x| {
             if post_regex.is_match(x) {
-                let img_url = find_image(&format!("{}{}", base_url, x)[..]);
-                download_img(img_url);
+                let img_url = format!("{}{}", base_url, x);
+                let img_page = reqwest::get(&img_url[..]).unwrap();
+                assert!(img_page.status().is_success());
+                Document::from_read(img_page)
+                    .unwrap()
+                    .find(Name("img"))
+                    .filter_map(|n| n.attr("src"))
+                    .for_each(|u| { // iterator should return on first element.
+                        download_img(u)
+                    });
+
             }
         });
-}
-
-fn find_image(url: String) {
-    
 }
 
 fn download_img(name: &str) {
