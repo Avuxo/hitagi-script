@@ -1,3 +1,3 @@
 # Hitagi-script
 
-Hitagi-Script is a parallelized *booru scraper written in Rust
+Hitagi-Script is a high-performance *booru scraper written in Rust
